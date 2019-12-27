@@ -1,0 +1,54 @@
+﻿@model IEnumerable<Clan_Member>
+@{
+    ViewData["Title"] = "Клан Destiny 2";
+}
+<div class="text-center">
+    <h1 class="display-4">Адские Гончие</h1>
+    <h2>Список стражей из всех составов</h2>
+</div>
+<form asp-action="AD" method="get">
+    <div>
+        <p>
+            Поиск по имени: <input type="text" class="form-control-sm" name="SearchString" value="@ViewData["currentFilter"]" />
+            <input type="submit" class="btn btn-primary" value="Найти" /> |
+            <a asp-action="Index">Сбросить фильтры</a>
+        </p>
+    </div>
+</form>
+<table class="table table-hover">
+    <thead>
+        <tr>
+            <th>#</th>
+            <th>Аватар</th>
+            <th><a asp-action="Index" asp-route-sortOrder="@ViewData["NameSortParm"]">Имя</a></th>
+            <th><a asp-action="Index" asp-route-sortOrder="@ViewData["DateSortParm"]">Дата вступления</a></th>
+            <th><a asp-action="Index" asp-route-sortOrder="@ViewData["DateLastPlayedSortParm"]">Последний раз был в игре</a></th>
+            <th>Состав</th>
+        </tr>
+    </thead>
+    <tbody>
+        @{int place = 1;}
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>
+                    @place
+                </td>
+                <td><img class="img-thumbnail" src="@Html.Raw($"http://bungie.net{item.IconPath}")" style="max-height:3rem;" /></td>
+                <td>
+                    <a asp-area="" asp-controller="Clan" asp-action="OpenProfile" asp-route-type="@item.DestinyMembershipType" asp-route-id="@item.DestinyMembershipId" rel="nofollow" target="_blank">@Html.DisplayFor(modelItem => item.Name)</a>
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.ClanJoinDate)
+                </td>
+                <td class="text-center">
+                    @Html.DisplayFor(modelItem => item.DateLastPlayed)
+                </td>
+                <td>
+                    <a asp-controller="Clan" asp-action="Index" asp-route-id="@item.ClanId" rel="nofollow" target="_blank">@Html.DisplayFor(modelItem => item.Clan.Name)</a>
+                </td>
+            </tr>
+            place++;
+        }
+    </tbody>
+</table>
