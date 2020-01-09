@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Globalization;
 
-namespace Site.Bot
+namespace Bot
 {
 	internal static class GlobalVariables
 	{

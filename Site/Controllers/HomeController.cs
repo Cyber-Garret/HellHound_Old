@@ -22,8 +22,14 @@ namespace Site.Controllers
         {
             return View();
         }
-
+        [Route("Rules")]
         public IActionResult Privacy()
+        {
+            return View();
+        }
+
+        [Route("Contacts")]
+        public IActionResult Contacts()
         {
             return View();
         }
