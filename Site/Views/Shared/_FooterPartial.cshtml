@@ -1,0 +1,25 @@
+﻿<footer class="border-top footer text-muted">
+	<div class="container">
+		<div class="align-items-center text-center">
+			<div class="btn-group">
+				<a asp-controller="Home" asp-action="OpenDiscord" rel="nofollow" target="_blank">
+					<span class="footer-links" data-toggle="tooltip" data-placement="top" title="Наш дискорд сервер">
+						<i class="fab fa-discord"></i>
+					</span>
+				</a>
+				<a asp-controller="Home" asp-action="OpenSteam" rel="nofollow" target="_blank">
+					<span class="footer-links" data-toggle="tooltip" data-placement="top" title="Наша группа Steam">
+						<i class="fab fa-steam"></i>
+					</span>
+				</a>
+				<a asp-controller="Home" asp-action="OpenVk" rel="nofollow" target="_blank">
+					<span class="footer-links" data-toggle="tooltip" data-placement="top" title="Наша группа Вконтакте">
+						<i class="fab fa-vk"></i>
+					</span>
+				</a>
+			</div>
+			<span class="float-left">&copy; @DateTime.Now.Year - Адские Гончие - <a asp-area="" asp-controller="Home" asp-action="Privacy">Правила</a></span>
+			<small class="float-right text-muted">Разработано <a asp-controller="Home" asp-action="Github" rel="nofollow" target="_blank">Cyber_Garret</a></small>
+		</div>
+	</div>
+</footer>
