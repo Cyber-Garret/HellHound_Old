@@ -1,4 +1,6 @@
-﻿using Discord;
+﻿using Bot.Helpers;
+using Bot.Models;
+using Discord;
 using Discord.Rest;
 using Discord.WebSocket;
 using ImageMagick;
@@ -11,7 +13,7 @@ using System.Linq;
 using System.Net;
 using System.Threading.Tasks;
 
-namespace Site.Bot.Services
+namespace Bot.Services
 {
 	public class GuildEventHandlerService
 	{
@@ -23,6 +25,7 @@ namespace Site.Bot.Services
 		private readonly LevelingService leveling;
 		private readonly EmoteService emoteService;
 		private readonly GuildSelfRoleService roleService;
+		private readonly GuildSettingsService settingsService;
 
 
 		public GuildEventHandlerService(IServiceProvider services)
@@ -149,10 +152,9 @@ namespace Site.Bot.Services
 				await UserJoined(user);
 				await UserWelcome(user);
 				//AutoRole
-				var guild = await DatabaseHelper.GetGuildAccountAsync(user.Guild.Id);
-				if (guild.AutoroleID != 0)
+				if (settingsService.AutoroleID != 0)
 				{
-					var targetRole = user.Guild.Roles.FirstOrDefault(r => r.Id == guild.AutoroleID);
+					var targetRole = user.Guild.Roles.FirstOrDefault(r => r.Id == settingsService.AutoroleID);
 					if (targetRole != null)
 						await user.AddRoleAsync(targetRole);
 				}
@@ -238,11 +240,10 @@ namespace Site.Bot.Services
 				#endregion
 
 				var currentIGuildChannel = (IGuildChannel)arg;
-				var guild = DatabaseHelper.GetGuildAccountAsync(currentIGuildChannel.Guild.Id).Result;
-				if (guild.LoggingChannel != 0)
+				if (settingsService.LoggingChannel != 0)
 				{
-					await discord.GetGuild(guild.Id).GetTextChannel(guild.LoggingChannel)
-						.SendMessageAsync(null, false, embed.Build());
+					var guild = await channel.Guild.GetTextChannelAsync(settingsService.LoggingChannel);
+					await guild.SendMessageAsync(embed: embed.Build());
 				}
 			}
 			catch (Exception ex)
@@ -281,11 +282,10 @@ namespace Site.Bot.Services
 
 				if (arg is IGuildChannel currentIguildChannel)
 				{
-					var guild = DatabaseHelper.GetGuildAccountAsync(currentIguildChannel.Guild.Id).Result;
-					if (guild.LoggingChannel != 0)
+					if (settingsService.LoggingChannel != 0)
 					{
-						await discord.GetGuild(guild.Id).GetTextChannel(guild.LoggingChannel)
-							.SendMessageAsync(null, false, embed.Build());
+						var guild = await channel.Guild.GetTextChannelAsync(settingsService.LoggingChannel);
+						await guild.SendMessageAsync(embed: embed.Build());
 					}
 				}
 
@@ -302,10 +302,6 @@ namespace Site.Bot.Services
 				#region Checks
 				if (after == null || before == after || before.IsBot)
 					return;
-				#endregion
-
-				#region Data
-				var guild = DatabaseHelper.GetGuildAccountAsync(before.Guild.Id).Result;
 				#endregion
 
 				#region Different Messages 
@@ -335,10 +331,10 @@ namespace Site.Bot.Services
 					}
 					#endregion
 
-					if (guild.LoggingChannel != 0)
+					if (settingsService.LoggingChannel != 0)
 					{
-						await discord.GetGuild(guild.Id).GetTextChannel(guild.LoggingChannel)
-							.SendMessageAsync(null, false, embed.Build());
+						await before.Guild.GetTextChannel(settingsService.LoggingChannel)
+							.SendMessageAsync(embed: embed.Build());
 					}
 				}
 
@@ -386,10 +382,10 @@ namespace Site.Bot.Services
 					}
 					#endregion
 
-					if (guild.LoggingChannel != 0)
+					if (settingsService.LoggingChannel != 0)
 					{
-						await discord.GetGuild(guild.Id).GetTextChannel(guild.LoggingChannel)
-							.SendMessageAsync(null, false, embed.Build());
+						await before.Guild.GetTextChannel(settingsService.LoggingChannel)
+							.SendMessageAsync(embed: embed.Build());
 					}
 				}
 				#endregion
@@ -407,7 +403,6 @@ namespace Site.Bot.Services
 			{
 				if (arg3 is IGuildChannel currentIGuildChannel)
 				{
-					var guild = DatabaseHelper.GetGuildAccountAsync(currentIGuildChannel.Guild.Id).Result;
 					if (messageAfter.Author.IsBot)
 						return;
 
@@ -480,11 +475,11 @@ namespace Site.Bot.Services
 					}
 
 
-					if (guild.LoggingChannel != 0)
+					if (settingsService.LoggingChannel != 0)
 					{
 
-						await discord.GetGuild(guild.Id).GetTextChannel(guild.LoggingChannel)
-							.SendMessageAsync(null, false, embed.Build());
+						await discord.Guilds.First().GetTextChannel(settingsService.LoggingChannel)
+							.SendMessageAsync(embed: embed.Build());
 					}
 				}
 			}
@@ -502,7 +497,6 @@ namespace Site.Bot.Services
 					return;
 				if (messageBefore.Value.Channel is ITextChannel textChannel)
 				{
-					var guild = DatabaseHelper.GetGuildAccountAsync(textChannel.Guild.Id).Result;
 
 					var log = await textChannel.Guild.GetAuditLogsAsync(1);
 					var audit = log.ToList();
@@ -548,11 +542,11 @@ namespace Site.Bot.Services
 						embedDel.AddField("Текст сообщения", $"{messageBefore.Value.Content}");
 					}
 
-					if (guild.LoggingChannel != 0)
+					if (settingsService.LoggingChannel != 0)
 					{
 
-						await discord.GetGuild(guild.Id).GetTextChannel(guild.LoggingChannel)
-							.SendMessageAsync(null, false, embedDel.Build());
+						await discord.Guilds.First().GetTextChannel(settingsService.LoggingChannel)
+							.SendMessageAsync(embed: embedDel.Build());
 					}
 
 				}
@@ -584,12 +578,11 @@ namespace Site.Bot.Services
 				embed.WithFooter($"Кто создавал: {name}", audit[0].User.GetAvatarUrl() ?? audit[0].User.GetDefaultAvatarUrl());
 				#endregion
 
-				var guild = DatabaseHelper.GetGuildAccountAsync(arg.Guild.Id).Result;
 
-				if (guild.LoggingChannel != 0)
+				if (settingsService.LoggingChannel != 0)
 				{
-					await discord.GetGuild(guild.Id).GetTextChannel(guild.LoggingChannel)
-						.SendMessageAsync(null, false, embed.Build());
+					await arg.Guild.GetTextChannel(settingsService.LoggingChannel)
+						.SendMessageAsync(embed: embed.Build());
 				}
 			}
 			catch (Exception ex)
@@ -621,12 +614,11 @@ namespace Site.Bot.Services
 				embed.WithFooter($"Кто удалял: {name}", audit[0].User.GetAvatarUrl() ?? audit[0].User.GetDefaultAvatarUrl());
 				#endregion
 
-				var guild = DatabaseHelper.GetGuildAccountAsync(arg.Guild.Id).Result;
 
-				if (guild.LoggingChannel != 0)
+				if (settingsService.LoggingChannel != 0)
 				{
-					await discord.GetGuild(guild.Id).GetTextChannel(guild.LoggingChannel)
-						.SendMessageAsync(null, false, embed.Build());
+					await discord.Guilds.First().GetTextChannel(settingsService.LoggingChannel)
+						.SendMessageAsync(embed: embed.Build());
 				}
 			}
 			catch (Exception ex)
@@ -642,13 +634,12 @@ namespace Site.Bot.Services
 				#region Checks
 				if (user == null || user.IsBot) return;
 
-				var guild = DatabaseHelper.GetGuildAccountAsync(user.Guild.Id).Result;
-				if (string.IsNullOrWhiteSpace(guild.WelcomeMessage)) return;
+				if (string.IsNullOrWhiteSpace(settingsService.WelcomeMessage)) return;
 				#endregion
 
 				IDMChannel dM = await user.GetOrCreateDMChannelAsync();
 
-				await dM.SendMessageAsync(null, false, MiscHelpers.WelcomeEmbed(user, guild.WelcomeMessage).Build());
+				await dM.SendMessageAsync(null, false, Embeds.WelcomeEmbed(user, settingsService.WelcomeMessage).Build());
 			}
 			catch (Exception ex)
 			{
@@ -660,9 +651,8 @@ namespace Site.Bot.Services
 		{
 			try
 			{
-				var guild = await DatabaseHelper.GetGuildAccountAsync(user.Guild.Id);
-				if (guild.WelcomeChannel == 0) return;
-				if (!(discord.GetChannel(guild.WelcomeChannel) is SocketTextChannel channel)) return;
+				if (settingsService.WelcomeChannel == 0) return;
+				if (!(discord.GetChannel(settingsService.WelcomeChannel) is SocketTextChannel channel)) return;
 				string[] randomWelcome =
 					{
 					"Опять Кабал? ©Ашер",
@@ -779,10 +769,9 @@ namespace Site.Bot.Services
 				embed.WithFooter($"Если ссылка на профиль некорректно отображается то просто скопируй <@{arg.Id}> вместе с <> и отправь в любой чат сообщением.");
 				#endregion
 
-				var guild = await DatabaseHelper.GetGuildAccountAsync(arg.Guild.Id);
-				if (guild.LoggingChannel != 0)
+				if (settingsService.LoggingChannel != 0)
 				{
-					await discord.GetGuild(guild.Id).GetTextChannel(guild.LoggingChannel)
+					await arg.Guild.GetTextChannel(settingsService.LoggingChannel)
 						.SendMessageAsync(null, false, embed.Build());
 				}
 			}

@@ -8,7 +8,7 @@ using Microsoft.Extensions.Logging;
 using System;
 using System.Threading.Tasks;
 
-namespace Site.Bot.Services
+namespace Bot.Services
 {
     public class LoggingService
     {

@@ -1,20 +1,28 @@
-﻿using Discord;
+﻿using Bot.Helpers;
+using Bot.Models;
+using Bot.Models.Db;
+
+using Discord;
 using Discord.Commands;
 using Discord.WebSocket;
+
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
+
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace Site.Bot.Services
+namespace Bot.Services
 {
 	public class MilestoneService
 	{
 		private readonly ILogger _logger;
 		private readonly DiscordSocketClient _discord;
 		private readonly EmoteService _emote;
+		private readonly HellContext Db;
 
 		private const byte Second = 2;
 		private const byte Three = 3;
@@ -27,6 +35,7 @@ namespace Site.Bot.Services
 			_logger = service.GetRequiredService<ILogger<MilestoneService>>();
 			_discord = service.GetRequiredService<DiscordSocketClient>();
 			_emote = service.GetRequiredService<EmoteService>();
+			Db = service.GetRequiredService<HellContext>();
 		}
 
 		public async Task MilestoneReactionAdded(Cacheable<IUserMessage, ulong> cache, SocketReaction reaction)
@@ -35,7 +44,6 @@ namespace Site.Bot.Services
 			{
 				var msg = await cache.GetOrDownloadAsync();
 
-				using var Db = new NeiraLinkContext();
 				//get milestone
 				var milestone = await Db.ActiveMilestones
 					.Include(mu => mu.MilestoneUsers)
@@ -149,7 +157,6 @@ namespace Site.Bot.Services
 			{
 				var msg = await cache.GetOrDownloadAsync();
 
-				using var Db = new NeiraLinkContext();
 				//get milestone
 				var milestone = await Db.ActiveMilestones
 					.Include(r => r.Milestone)
@@ -238,35 +245,22 @@ namespace Site.Bot.Services
 
 		private async void HandleReaction(IUserMessage message, ActiveMilestone activeMilestone)
 		{
-			var newEmbed = EmbedsHelper.MilestoneRebuild(_discord, activeMilestone, _emote.Raid);
+			var newEmbed = Embeds.MilestoneRebuild(_discord, activeMilestone, _emote.Raid);
 			if (newEmbed.Length != 0)
 				await message.ModifyAsync(m => m.Embed = newEmbed);
 			if (activeMilestone.Milestone.MaxSpace == activeMilestone.MilestoneUsers.Count + 1 && activeMilestone.DateExpire < DateTime.Now.AddMinutes(15))
 			{
 				await message.RemoveAllReactionsAsync();
-				await message.ModifyAsync(c => c.Embed = EmbedsHelper.MilestoneEnd(_discord, activeMilestone));
+				await message.ModifyAsync(c => c.Embed = Embeds.MilestoneEnd(_discord, activeMilestone));
 
 				await RaidNotificationAsync(activeMilestone, RemindType.FullCount);
 			}
-		}
-
-		private async Task UpdateBotStatAsync()
-		{
-			using var Db = new NeiraLinkContext();
-			//Update Bot stat for website.
-			var stats = Db.BotInfos.FirstOrDefault();
-			stats.Milestones++;
-			stats.Servers = _discord.Guilds.Count;
-			stats.Users = _discord.Guilds.Sum(u => u.Users.Count);
-			Db.BotInfos.Update(stats);
-			await Db.SaveChangesAsync();
 		}
 
 		public async Task RegisterMilestoneAsync(ulong msgId, SocketCommandContext context, DateTime dateExpire, MilestoneType type, byte raidInfoId, string userMemo)
 		{
 			try
 			{
-				using var Db = new NeiraLinkContext();
 				ActiveMilestone newMilestone = new ActiveMilestone
 				{
 					MessageId = msgId,
@@ -280,8 +274,6 @@ namespace Site.Bot.Services
 
 				Db.ActiveMilestones.Add(newMilestone);
 				await Db.SaveChangesAsync();
-
-				_ = Task.Run(async () => await UpdateBotStatAsync());
 			}
 			catch (Exception ex)
 			{
@@ -300,9 +292,9 @@ namespace Site.Bot.Services
 
 				Embed BakedEmbed = null;
 				if (type == RemindType.FullCount)
-					BakedEmbed = EmbedsHelper.MilestoneRemindByFullCount(_discord, milestone, Guild);
+					BakedEmbed = Embeds.MilestoneRemindByFullCount(_discord, milestone, Guild);
 				else
-					BakedEmbed = EmbedsHelper.MilestoneRemindByTimer(_discord, milestone, Guild);
+					BakedEmbed = Embeds.MilestoneRemindByTimer(_discord, milestone, Guild);
 
 
 				await LeaderDM.SendMessageAsync(embed: BakedEmbed);

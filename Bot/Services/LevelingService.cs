@@ -6,7 +6,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace Site.Bot.Services
+namespace Bot.Services
 {
 	public class LevelingService
 	{

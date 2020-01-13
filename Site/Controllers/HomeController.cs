@@ -61,8 +61,8 @@ namespace Site.Controllers
         [Route("SteamGroup")]
         public IActionResult OpenSteam() => RedirectPermanent($"https://steamcommunity.com/groups/D2_HellHound");
 
-        [Route("VKGroup")]
-        public IActionResult OpenVk() => RedirectPermanent($"https://github.com/Cyber-Garret");
+        //[Route("VKGroup")]
+        //public IActionResult OpenVk() => RedirectPermanent($"https://github.com/Cyber-Garret");
 
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
         public IActionResult Error()

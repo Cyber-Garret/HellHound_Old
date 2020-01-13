@@ -1,15 +1,15 @@
-﻿using Discord;
+﻿using Bot.Models;
+
+using Discord;
 using Discord.WebSocket;
-using Microsoft.Extensions.Configuration;
+
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
-using Site.Models;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 
-namespace Site.Bot.Services
+using System;
+using System.Linq;
+
+namespace Bot.Services
 {
 	public class EmoteService
 	{
@@ -31,12 +31,12 @@ namespace Site.Bot.Services
 		public IEmote ReactSixth => new Emoji("6\u20e3");
 
 		private readonly DiscordSocketClient discord;
-		private readonly Settings settings;
+		private readonly DiscordSettings settings;
 
 		public EmoteService(IServiceProvider service)
 		{
 			discord = service.GetRequiredService<DiscordSocketClient>();
-			settings = service.GetRequiredService<IOptions<Settings>>().Value;
+			settings = service.GetRequiredService<IOptions<DiscordSettings>>().Value;
 		}
 
 		public void Configure()
