@@ -1,11 +1,14 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Reflection;
-using System.Threading.Tasks;
+﻿using Bot.Models;
+
 using Discord.Commands;
 using Discord.WebSocket;
+
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Options;
+
+using System;
+using System.Reflection;
+using System.Threading.Tasks;
 
 namespace Bot.Services
 {
@@ -15,12 +18,14 @@ namespace Bot.Services
 		private readonly DiscordSocketClient discord;
 		private readonly LevelingService leveling;
 		private CommandService command;
+		private readonly DiscordSettings settings;
 		public CommandHandlerService(IServiceProvider service)
 		{
 			this.service = service;
 			discord = service.GetRequiredService<DiscordSocketClient>();
 			leveling = service.GetRequiredService<LevelingService>();
 			command = service.GetRequiredService<CommandService>();
+			settings = service.GetRequiredService<IOptions<DiscordSettings>>().Value;
 		}
 
 		public async Task ConfigureAsync()
@@ -43,7 +48,7 @@ namespace Bot.Services
 
 			var argPos = 0;
 			// Ignore if not mention this bot or command not start from prefix
-			if (!(msg.HasMentionPrefix(discord.CurrentUser, ref argPos) || msg.HasCharPrefix('!', ref argPos))) return;
+			if (!(msg.HasMentionPrefix(discord.CurrentUser, ref argPos) || msg.HasCharPrefix(settings.Prefix, ref argPos))) return;
 
 			//search command
 			var cmdSearchResult = command.Search(context, argPos);
@@ -54,8 +59,8 @@ namespace Bot.Services
 
 			await executionTask.ContinueWith(task =>
 			{
-					// If Success or command unknown just finish Task
-					if (task.Result.IsSuccess || task.Result.Error == CommandError.UnknownCommand) return;
+				// If Success or command unknown just finish Task
+				if (task.Result.IsSuccess || task.Result.Error == CommandError.UnknownCommand) return;
 
 				context.Channel.SendMessageAsync($"{context.User.Mention} Ошибка: {task.Result.ErrorReason}");
 			});

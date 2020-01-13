@@ -5,25 +5,19 @@ using System.ComponentModel.DataAnnotations.Schema;
 namespace Bot.Models.Db
 {
 
-	public class Config
+	public class GuildConfig
 	{
-		[Key]
-		public virtual int ConfigTypeId
-		{
-			get
-			{
-				return (int)ConfigType;
-			}
-			set
-			{
-				ConfigType = (ConfigType)value;
-			}
-		}
-		[EnumDataType(typeof(ConfigType))]
-		public ConfigType  ConfigType { get; set; }
-
-		[MaxLength(128), Required]
-		public string Value { get; set; }
+		[Key, Required, DatabaseGenerated(DatabaseGeneratedOption.None)]
+		public ulong Id { get; set; }
+		public ulong NotificationChannel { get; set; } = 0;
+		public ulong LoggingChannel { get; set; } = 0;
+		public ulong WelcomeChannel { get; set; } = 0;
+		public string WelcomeMessage { get; set; } = string.Empty;
+		public string LeaveMessage { get; set; } = string.Empty;
+		public ulong AutoroleID { get; set; } = 0;
+		public string GlobalMention { get; set; } = string.Empty;
+		public bool Economy { get; set; } = false;
+		public ulong SelfRoleMessageId { get; set; } = 0;
 	}
 	public class GuildSelfRole
 	{
