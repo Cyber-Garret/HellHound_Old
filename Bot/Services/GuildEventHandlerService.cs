@@ -154,9 +154,9 @@ namespace Bot.Services
 				await UserJoined(user);
 				await UserWelcome(user);
 				//AutoRole
-				if (settingsService.AutoroleID != 0)
+				if (settingsService.config.AutoroleID != 0)
 				{
-					var targetRole = user.Guild.Roles.FirstOrDefault(r => r.Id == settingsService.AutoroleID);
+					var targetRole = user.Guild.Roles.FirstOrDefault(r => r.Id == settingsService.config.AutoroleID);
 					if (targetRole != null)
 						await user.AddRoleAsync(targetRole);
 				}
@@ -242,9 +242,9 @@ namespace Bot.Services
 				#endregion
 
 				var currentIGuildChannel = (IGuildChannel)arg;
-				if (settingsService.LoggingChannel != 0)
+				if (settingsService.config.LoggingChannel != 0)
 				{
-					var guild = await channel.Guild.GetTextChannelAsync(settingsService.LoggingChannel);
+					var guild = await channel.Guild.GetTextChannelAsync(settingsService.config.LoggingChannel);
 					await guild.SendMessageAsync(embed: embed.Build());
 				}
 			}
@@ -284,9 +284,9 @@ namespace Bot.Services
 
 				if (arg is IGuildChannel currentIguildChannel)
 				{
-					if (settingsService.LoggingChannel != 0)
+					if (settingsService.config.LoggingChannel != 0)
 					{
-						var guild = await channel.Guild.GetTextChannelAsync(settingsService.LoggingChannel);
+						var guild = await channel.Guild.GetTextChannelAsync(settingsService.config.LoggingChannel);
 						await guild.SendMessageAsync(embed: embed.Build());
 					}
 				}
@@ -333,9 +333,9 @@ namespace Bot.Services
 					}
 					#endregion
 
-					if (settingsService.LoggingChannel != 0)
+					if (settingsService.config.LoggingChannel != 0)
 					{
-						await before.Guild.GetTextChannel(settingsService.LoggingChannel)
+						await before.Guild.GetTextChannel(settingsService.config.LoggingChannel)
 							.SendMessageAsync(embed: embed.Build());
 					}
 				}
@@ -384,9 +384,9 @@ namespace Bot.Services
 					}
 					#endregion
 
-					if (settingsService.LoggingChannel != 0)
+					if (settingsService.config.LoggingChannel != 0)
 					{
-						await before.Guild.GetTextChannel(settingsService.LoggingChannel)
+						await before.Guild.GetTextChannel(settingsService.config.LoggingChannel)
 							.SendMessageAsync(embed: embed.Build());
 					}
 				}
@@ -477,10 +477,10 @@ namespace Bot.Services
 					}
 
 
-					if (settingsService.LoggingChannel != 0)
+					if (settingsService.config.LoggingChannel != 0)
 					{
 
-						await discord.Guilds.First().GetTextChannel(settingsService.LoggingChannel)
+						await discord.Guilds.First().GetTextChannel(settingsService.config.LoggingChannel)
 							.SendMessageAsync(embed: embed.Build());
 					}
 				}
@@ -544,10 +544,10 @@ namespace Bot.Services
 						embedDel.AddField("Текст сообщения", $"{messageBefore.Value.Content}");
 					}
 
-					if (settingsService.LoggingChannel != 0)
+					if (settingsService.config.LoggingChannel != 0)
 					{
 
-						await discord.Guilds.First().GetTextChannel(settingsService.LoggingChannel)
+						await discord.Guilds.First().GetTextChannel(settingsService.config.LoggingChannel)
 							.SendMessageAsync(embed: embedDel.Build());
 					}
 
@@ -581,9 +581,9 @@ namespace Bot.Services
 				#endregion
 
 
-				if (settingsService.LoggingChannel != 0)
+				if (settingsService.config.LoggingChannel != 0)
 				{
-					await arg.Guild.GetTextChannel(settingsService.LoggingChannel)
+					await arg.Guild.GetTextChannel(settingsService.config.LoggingChannel)
 						.SendMessageAsync(embed: embed.Build());
 				}
 			}
@@ -617,9 +617,9 @@ namespace Bot.Services
 				#endregion
 
 
-				if (settingsService.LoggingChannel != 0)
+				if (settingsService.config.LoggingChannel != 0)
 				{
-					await discord.Guilds.First().GetTextChannel(settingsService.LoggingChannel)
+					await discord.Guilds.First().GetTextChannel(settingsService.config.LoggingChannel)
 						.SendMessageAsync(embed: embed.Build());
 				}
 			}
@@ -636,12 +636,12 @@ namespace Bot.Services
 				#region Checks
 				if (user == null || user.IsBot) return;
 
-				if (string.IsNullOrWhiteSpace(settingsService.WelcomeMessage)) return;
+				if (string.IsNullOrWhiteSpace(settingsService.config.WelcomeMessage)) return;
 				#endregion
 
 				IDMChannel dM = await user.GetOrCreateDMChannelAsync();
 
-				await dM.SendMessageAsync(null, false, Embeds.WelcomeEmbed(user, settingsService.WelcomeMessage).Build());
+				await dM.SendMessageAsync(null, false, Embeds.WelcomeEmbed(user, settingsService.config.WelcomeMessage).Build());
 			}
 			catch (Exception ex)
 			{
@@ -653,8 +653,8 @@ namespace Bot.Services
 		{
 			try
 			{
-				if (settingsService.WelcomeChannel == 0) return;
-				if (!(discord.GetChannel(settingsService.WelcomeChannel) is SocketTextChannel channel)) return;
+				if (settingsService.config.WelcomeChannel == 0) return;
+				if (!(discord.GetChannel(settingsService.config.WelcomeChannel) is SocketTextChannel channel)) return;
 				string[] randomWelcome =
 					{
 					"Опять Кабал? ©Ашер",
@@ -771,9 +771,9 @@ namespace Bot.Services
 				embed.WithFooter($"Если ссылка на профиль некорректно отображается то просто скопируй <@{arg.Id}> вместе с <> и отправь в любой чат сообщением.");
 				#endregion
 
-				if (settingsService.LoggingChannel != 0)
+				if (settingsService.config.LoggingChannel != 0)
 				{
-					await arg.Guild.GetTextChannel(settingsService.LoggingChannel)
+					await arg.Guild.GetTextChannel(settingsService.config.LoggingChannel)
 						.SendMessageAsync(null, false, embed.Build());
 				}
 			}

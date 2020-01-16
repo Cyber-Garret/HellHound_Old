@@ -5,8 +5,6 @@ using Discord;
 using Discord.Addons.Interactive;
 using Discord.Commands;
 using Discord.WebSocket;
-
-using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
@@ -56,7 +54,7 @@ namespace Bot
 
 					var connection = Configuration.GetConnectionString("DefaultConnection");
 
-					services.AddDbContext<HellContext>(options => options.UseSqlServer(connection));
+					//services.AddDbContext<HellContext>(options => options.UseSqlServer(connection));
 				});
 	}
 }

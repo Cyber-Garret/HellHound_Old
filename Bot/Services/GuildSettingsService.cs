@@ -1,40 +1,39 @@
-﻿using Bot.Helpers;
-using Bot.Models;
+
+﻿using Bot.Models;
+using Bot.Models.Db;
 
 using Microsoft.Extensions.DependencyInjection;
 
 using System;
 using System.Linq;
 
+using System.Threading.Tasks;
+
 namespace Bot.Services
 {
-	public class GuildSettingsService
-	{
-		public ulong NotificationChannel = 0;
-		public ulong LoggingChannel = 0;
-		public ulong WelcomeChannel = 0;
-		public string WelcomeMessage = string.Empty;
-		public string LeaveMessage = string.Empty;
-		public ulong AutoroleID = 0;
-		public string GlobalMention = string.Empty;
-		public bool Economy = false;
-		public ulong SelfRoleMessageId = 0;
+    public class GuildSettingsService
+    {
+        public GuildConfig config;
 
-		private readonly HellContext Db;
-		public GuildSettingsService(IServiceProvider service)
-		{
-			Db = service.GetRequiredService<HellContext>();
-		}
+        private readonly HellContext Db;
+        public GuildSettingsService(IServiceProvider service)
+        {
+            Db = service.GetRequiredService<HellContext>();
+        }
 
-		public void Configure()
-		{
-			var NotifDb = Db.Configs.FirstOrDefault(c => c.ConfigType == ConfigType.NotificationChannel);
-			if (!string.IsNullOrEmpty(NotifDb.Value))
-				NotificationChannel = Convert.ToUInt64(NotifDb);
+        public void LoadConfig()
+        {
+            //take config for db;
+            config = Db.GuildConfigs.First();
+        }
 
-			var logDb = Db.Configs.FirstOrDefault(c => c.ConfigType == ConfigType.LoggingChannel);
-			if (!string.IsNullOrEmpty(logDb.Value))
-				LoggingChannel = Convert.ToUInt64(logDb.Value);
-		}
-	}
+        public void SaveAndReloadConfig(GuildConfig config)
+        {
+            //update and save in db;
+            //Db.Update(config);
+            //await Db.SaveChangesAsync();
+            //reload config
+            this.config = config;
+        }
+    }
 }

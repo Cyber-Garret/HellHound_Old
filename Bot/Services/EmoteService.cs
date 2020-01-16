@@ -48,7 +48,7 @@ namespace Bot.Services
 			Arc = HoundHome.Emotes.First(e => e.Name == "arc");
 			Solar = HoundHome.Emotes.First(e => e.Name == "solar");
 			Void = HoundHome.Emotes.First(e => e.Name == "void");
-			//Global Currency
+			//Currency
 			Glimmer = HoundHome.Emotes.First(e => e.Name == "glimmer");
 			//Engrams
 			ExoticEngram = HoundHome.Emotes.First(e => e.Name == "Exotic_Engram");
