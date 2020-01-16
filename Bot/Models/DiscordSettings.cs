@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace Bot.Models
+﻿namespace Bot.Models
 {
 	public class DiscordSettings
 	{

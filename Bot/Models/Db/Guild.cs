@@ -1,6 +1,6 @@
 ﻿using Bot.Helpers;
+
 using System.ComponentModel.DataAnnotations;
-using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Bot.Models.Db
 {
@@ -20,7 +20,7 @@ namespace Bot.Models.Db
 			}
 		}
 		[EnumDataType(typeof(ConfigType))]
-		public ConfigType  ConfigType { get; set; }
+		public ConfigType ConfigType { get; set; }
 
 		[MaxLength(128), Required]
 		public string Value { get; set; }

@@ -3,6 +3,7 @@ using Discord.WebSocket;
 
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.DependencyInjection;
+
 using Site.Services.Discord.Services;
 
 [assembly: HostingStartup(typeof(Site.Services.Discord.DiscordHostingStartup))]

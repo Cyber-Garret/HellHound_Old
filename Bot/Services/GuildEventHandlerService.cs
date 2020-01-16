@@ -1,13 +1,15 @@
 ﻿using Bot.Helpers;
-using Bot.Models;
+
 using Discord;
 using Discord.Rest;
 using Discord.WebSocket;
+
 using ImageMagick;
+
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
+
 using System;
-using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Net;

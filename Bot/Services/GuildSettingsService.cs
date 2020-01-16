@@ -1,10 +1,10 @@
-﻿using Bot.Models;
+﻿using Bot.Helpers;
+using Bot.Models;
+
 using Microsoft.Extensions.DependencyInjection;
+
 using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using Bot.Helpers;
 
 namespace Bot.Services
 {

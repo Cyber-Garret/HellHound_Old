@@ -1,11 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
+﻿using Discord.Commands;
+using Discord.WebSocket;
+
+using Microsoft.Extensions.DependencyInjection;
+
+using System;
 using System.Reflection;
 using System.Threading.Tasks;
-using Discord.Commands;
-using Discord.WebSocket;
-using Microsoft.Extensions.DependencyInjection;
 
 namespace Bot.Services
 {
@@ -54,8 +54,8 @@ namespace Bot.Services
 
 			await executionTask.ContinueWith(task =>
 			{
-					// If Success or command unknown just finish Task
-					if (task.Result.IsSuccess || task.Result.Error == CommandError.UnknownCommand) return;
+				// If Success or command unknown just finish Task
+				if (task.Result.IsSuccess || task.Result.Error == CommandError.UnknownCommand) return;
 
 				context.Channel.SendMessageAsync($"{context.User.Mention} Ошибка: {task.Result.ErrorReason}");
 			});
