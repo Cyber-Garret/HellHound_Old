@@ -1,13 +1,12 @@
-using Bot.Models;
 using Bot.Services;
 
 using Discord;
 using Discord.WebSocket;
 
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
-using Microsoft.Extensions.Options;
 
 using System;
 using System.Threading;
@@ -18,21 +17,23 @@ namespace Bot
 	public class Bot : BackgroundService
 	{
 		private readonly IServiceProvider service;
+		private readonly IConfiguration config;
 		private readonly ILogger<Bot> logger;
 		private readonly DiscordSocketClient discord;
-		private readonly DiscordSettings settings;
 
-		public Bot(IServiceProvider service)
+		public Bot(IServiceProvider service, IConfiguration configuration)
 		{
 			this.service = service;
+			config = configuration;
 			logger = service.GetRequiredService<ILogger<Bot>>();
 			discord = service.GetRequiredService<DiscordSocketClient>();
-			settings = service.GetRequiredService<IOptions<DiscordSettings>>().Value;
 		}
 
 		protected override async Task ExecuteAsync(CancellationToken stoppingToken)
 		{
-			if (string.IsNullOrWhiteSpace(settings.Token))
+			var token = config["Bot:Token"];
+
+			if (string.IsNullOrWhiteSpace(token))
 			{
 				logger.LogError("Discord Token not provided");
 				return;
@@ -44,16 +45,23 @@ namespace Bot
 				await service.GetRequiredService<CommandHandlerService>().ConfigureAsync();
 
 
-				await discord.LoginAsync(TokenType.Bot, settings.Token);
+				await discord.LoginAsync(TokenType.Bot, token);
 				await discord.StartAsync();
 				await discord.SetStatusAsync(UserStatus.Online);
-				await discord.SetGameAsync(@"hell-hounds.ru");
+				await discord.SetGameAsync(@"Destiny 2");
 			}
 			catch (Exception ex)
 			{
 				logger.LogError(ex, "Error starting bot");
 				throw;
 			}
+		}
+
+		public override async Task StopAsync(CancellationToken cancellationToken)
+		{
+			await discord.SetStatusAsync(UserStatus.Offline);
+			await discord.StopAsync();
+			discord.Dispose();
 		}
 	}
 }

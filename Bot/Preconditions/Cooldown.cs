@@ -4,7 +4,7 @@ using System;
 using System.Collections.Concurrent;
 using System.Threading.Tasks;
 
-namespace Site.Bot.Preconditions
+namespace Bot.Preconditions
 {
 	internal sealed class Cooldown : PreconditionAttribute
 	{

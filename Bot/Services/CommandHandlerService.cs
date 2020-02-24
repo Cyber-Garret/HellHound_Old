@@ -1,10 +1,9 @@
-﻿using Bot.Models;
-
+﻿
 using Discord.Commands;
 using Discord.WebSocket;
 
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Options;
 
 using System;
 using System.Reflection;
@@ -15,17 +14,15 @@ namespace Bot.Services
 	public class CommandHandlerService
 	{
 		private readonly IServiceProvider service;
+		private readonly IConfiguration config;
 		private readonly DiscordSocketClient discord;
-		private readonly LevelingService leveling;
 		private CommandService command;
-		private readonly DiscordSettings settings;
-		public CommandHandlerService(IServiceProvider service)
+		public CommandHandlerService(IServiceProvider service, IConfiguration configuration)
 		{
 			this.service = service;
+			config = configuration;
 			discord = service.GetRequiredService<DiscordSocketClient>();
-			leveling = service.GetRequiredService<LevelingService>();
 			command = service.GetRequiredService<CommandService>();
-			settings = service.GetRequiredService<IOptions<DiscordSettings>>().Value;
 		}
 
 		public async Task ConfigureAsync()
@@ -47,8 +44,9 @@ namespace Bot.Services
 			var context = new SocketCommandContext(discord, msg);
 
 			var argPos = 0;
+			var prefix = config["Bot:Prefix"];
 			// Ignore if not mention this bot or command not start from prefix
-			if (!(msg.HasMentionPrefix(discord.CurrentUser, ref argPos) || msg.HasCharPrefix(settings.Prefix, ref argPos))) return;
+			if (!(msg.HasMentionPrefix(discord.CurrentUser, ref argPos) || msg.HasStringPrefix(prefix, ref argPos))) return;
 
 			//search command
 			var cmdSearchResult = command.Search(context, argPos);
@@ -63,12 +61,6 @@ namespace Bot.Services
 				if (task.Result.IsSuccess || task.Result.Error == CommandError.UnknownCommand) return;
 
 				context.Channel.SendMessageAsync($"{context.User.Mention} Ошибка: {task.Result.ErrorReason}");
-			});
-
-			await Task.Run(async () =>
-			{
-				await leveling.GlobalLevel((SocketGuildUser)context.User);
-				await leveling.MessageRewards((SocketGuildUser)context.User, message);
 			});
 		}
 	}

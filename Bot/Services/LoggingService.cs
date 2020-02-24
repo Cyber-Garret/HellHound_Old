@@ -16,14 +16,12 @@ namespace Bot.Services
 		private readonly ILogger logger;
 		private readonly DiscordSocketClient discord;
 		private readonly CommandService command;
-		private readonly EmoteService emote;
 
 		public LoggingService(IServiceProvider service)
 		{
 			// get the services we need via DI, and assign the fields declared above to them
 			discord = service.GetRequiredService<DiscordSocketClient>();
 			command = service.GetRequiredService<CommandService>();
-			emote = service.GetRequiredService<EmoteService>();
 			logger = service.GetRequiredService<ILogger<LoggingService>>();
 
 			// hook into these events with the methods provided below
@@ -93,7 +91,6 @@ namespace Bot.Services
 			Task.Run(() =>
 			{
 				logger.LogInformation($"Connected as -> [{discord.CurrentUser}] :)");
-				emote.Configure();
 			});
 			return Task.CompletedTask;
 		}
