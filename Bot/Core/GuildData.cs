@@ -16,7 +16,7 @@ namespace Bot.Core
 			if (result != null)
 				guild = result;
 			else
-				result = new Guild();
+				guild = new Guild();
 		}
 
 		internal static void SaveGuild()

@@ -1,4 +1,5 @@
 ﻿using Bot.Core;
+using Bot.Models;
 using Bot.Preconditions;
 using Discord;
 using Discord.Commands;
@@ -13,7 +14,7 @@ namespace Bot.Modules
 	public class RainbowModule : ModuleBase<SocketCommandContext>
 	{
 		[Command("добавить")]
-		public async Task AddColor(string hex)
+		public async Task AddColor(SocketRole role, string hex)
 		{
 			if (hex.StartsWith("0x", StringComparison.CurrentCultureIgnoreCase) ||
 				hex.StartsWith("&H", StringComparison.CurrentCultureIgnoreCase))
@@ -29,7 +30,8 @@ namespace Bot.Modules
 			if (parsedSuccessfully)
 			{
 				var guild = GuildData.guild;
-				if (guild.Colors.Contains(color))
+				
+				if (guild.rainbowRoles.Contains())
 				{
 					await ReplyAsync("Цвет был добавлен ранее");
 					return;
