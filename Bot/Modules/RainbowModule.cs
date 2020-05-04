@@ -5,7 +5,10 @@ using Discord;
 using Discord.Commands;
 using Discord.WebSocket;
 using System;
+using System.Collections.Generic;
 using System.Globalization;
+using System.Linq;
+using System.Runtime.InteropServices;
 using System.Threading.Tasks;
 
 namespace Bot.Modules
@@ -16,31 +19,43 @@ namespace Bot.Modules
 		[Command("добавить")]
 		public async Task AddColor(SocketRole role, string hex)
 		{
+			#region parseColor
 			if (hex.StartsWith("0x", StringComparison.CurrentCultureIgnoreCase) ||
 				hex.StartsWith("&H", StringComparison.CurrentCultureIgnoreCase))
 				hex = hex.Substring(2);
 
 			if (hex.StartsWith("#", StringComparison.CurrentCultureIgnoreCase))
 				hex = hex.Substring(1);
+			#endregion
 
-			bool parsedSuccessfully = uint.TryParse(hex,
-					NumberStyles.HexNumber,
-					CultureInfo.CurrentCulture,
-					out uint color);
+			bool parsedSuccessfully = uint.TryParse(hex, NumberStyles.HexNumber, CultureInfo.CurrentCulture, out uint color);
 			if (parsedSuccessfully)
 			{
 				var guild = GuildData.guild;
-				
-				if (guild.rainbowRoles.Contains())
+				var currentRole = guild.rainbowRoles.FirstOrDefault(r => r.RoleId == role.Id);
+
+				if (currentRole.Colors.Contains(color))
 				{
-					await ReplyAsync("Цвет был добавлен ранее");
+					await ReplyAsync("Цвет был добавлен ранее или ");
 					return;
 				}
 				else
 				{
-					guild.Colors.Add(color);
+					if (currentRole == null)
+					{
+						var newRole = new RainbowRole
+						{
+							RoleId = role.Id,
+							Colors = new List<uint>()
+						};
+						newRole.Colors.Add(color);
+						guild.rainbowRoles.Add(newRole);
+					}
+					else
+						currentRole.Colors.Add(color);
+
 					GuildData.SaveGuild();
-					await ReplyAsync("Цвет сохранен.");
+					await ReplyAsync($"Для роли {role.Mention}, сохранен цвет #{color}.");
 				}
 			}
 			else
