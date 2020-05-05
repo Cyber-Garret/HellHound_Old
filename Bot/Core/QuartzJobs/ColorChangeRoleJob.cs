@@ -1,11 +1,13 @@
 ﻿using Discord;
 using Discord.WebSocket;
+
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-
+using Microsoft.Extensions.Logging;
 using Quartz;
-
+using Serilog;
 using System;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace Bot.Core.QuartzJobs
@@ -15,28 +17,51 @@ namespace Bot.Core.QuartzJobs
 	{
 		private readonly DiscordSocketClient discord;
 		private readonly IConfiguration config;
+		private readonly ILogger<ColorChangeRoleJob> logger;
 
-		public ColorChangeRoleJob(IServiceProvider service, IConfiguration configuration)
+		public ColorChangeRoleJob(IServiceProvider service, IConfiguration configuration, ILogger<ColorChangeRoleJob> logger)
 		{
 			discord = service.GetRequiredService<DiscordSocketClient>();
 			config = configuration;
+			this.logger = logger;
 		}
 
 		public Task Execute(IJobExecutionContext context)
 		{
 			var guild = GuildData.guild;
-			if (guild.RoleId != 0 && guild.Colors.Count > 1)
+			//Roles have in list?
+			if (guild.rainbowRoles.Count > 0)
 			{
-				var guildId = config.GetSection("Bot:Guild").Get<ulong>();
+				foreach (var item in guild.rainbowRoles)
+				{
+					//Role have more 2 colors?
+					if (item.Colors.Count > 1)
+					{
+						try
+						{
+							//Get guild ID
+							var guildId = config.GetSection("Bot:Guild").Get<ulong>();
+							//Get saved role by ID
+							var role = discord.GetGuild(guildId).GetRole(item.RoleId);
 
-				var role = discord.GetGuild(guildId).GetRole(guild.RoleId);
-				var colors = guild.Colors;
+							//Take random color
+							var rnd = new Random();
+							var color = rnd.Next(item.Colors.Count);
+							var selectedColor = new Color(item.Colors[color]);
 
-				var rnd = new Random();
-				var color = rnd.Next(colors.Count);
-				var selectedColor = new Color(colors[color]);
+							//Wait 1 second  for avoid preemptive rate limit before we update role color.
+							Thread.Sleep(1000);
+							//Change color on role
+							role.ModifyAsync(r => r.Color = selectedColor);
 
-				role.ModifyAsync(r => r.Color = selectedColor);
+							logger.LogInformation($"On role {role.Name} changed color to {selectedColor}");
+						}
+						catch (Exception ex)
+						{
+							logger.LogError(ex, "Change color job");
+						}
+					}
+				}
 			}
 
 			return Task.CompletedTask;

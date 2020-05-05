@@ -13,9 +13,11 @@ using Microsoft.Extensions.Logging;
 using Quartz;
 using Quartz.Impl;
 using Quartz.Spi;
-using System;
+
 using Serilog;
 using Serilog.Core;
+
+using System;
 
 namespace Bot
 {
@@ -35,7 +37,6 @@ namespace Bot
 			try
 			{
 				return Host.CreateDefaultBuilder(args)
-					.UseWindowsService()
 					.ConfigureLogging(logger =>
 					{
 						logger.ClearProviders();
@@ -52,7 +53,7 @@ namespace Bot
 					services.AddSingleton(new DiscordSocketClient(new DiscordSocketConfig
 					{
 						AlwaysDownloadUsers = true,
-						LogLevel = LogSeverity.Verbose,
+						LogLevel = LogSeverity.Warning,
 						DefaultRetryMode = RetryMode.AlwaysRetry,
 						MessageCacheSize = 0
 					}));
