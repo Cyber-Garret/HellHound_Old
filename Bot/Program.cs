@@ -4,6 +4,7 @@ using Bot.Services;
 using Discord;
 using Discord.Commands;
 using Discord.WebSocket;
+using Discord.Addons.Interactive;
 
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -55,12 +56,14 @@ namespace Bot
 						AlwaysDownloadUsers = true,
 						LogLevel = LogSeverity.Verbose,
 						DefaultRetryMode = RetryMode.AlwaysRetry,
-						MessageCacheSize = 0
+						MessageCacheSize = 1000
 					}));
 					services.AddSingleton<CommandService>()
 					.AddSingleton<LoggingService>()
 					.AddSingleton<CommandHandlerService>()
-					.AddSingleton<GuildEventHandlerService>();
+					.AddSingleton<GuildEventHandlerService>()
+					.AddSingleton<LevelingService>()
+					.AddSingleton<InteractiveService>();
 
 					//Quartz Jobs 
 					services.AddSingleton<ColorChangeRoleJob>();

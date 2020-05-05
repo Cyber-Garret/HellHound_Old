@@ -9,6 +9,11 @@
   "LastRep": "2020-05-03T15:37:58.2519701+03:00",
   "LastXPMessage": "2020-05-05T15:37:58.2519856+03:00",
   "LevelNumber": 0,
-  "NumberOfWarnings": 0,
-  "Warnings": []
+  "NumberOfWarnings": 1,
+  "Warnings": [
+    {
+      "CreateDate": "2020-05-05T21:32:55.2586316+03:00",
+      "Reason": "тест"
+    }
+  ]
 }
