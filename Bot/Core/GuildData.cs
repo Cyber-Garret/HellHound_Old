@@ -1,24 +1,25 @@
 ﻿using Bot.Models;
+using System.IO;
+using System.Linq;
 
 namespace Bot.Core
 {
 	internal static class GuildData
 	{
-		private const string filename = "guild";
 		public static Guild guild;
 		static GuildData()
 		{
-			var result = DataStorage.LoadJSONFromHDD<Guild>(filename);
+			var result = DataStorage.LoadJSONFromHDD<Guild>(DataStorage.ResDirectory);
 
-			if (result != null)
-				guild = result;
+			if (result.Count > 0)
+				guild = result.First();
 			else
 				guild = new Guild();
 		}
 
 		internal static void SaveGuild()
 		{
-			DataStorage.SaveObject(guild, filename, true);
+			DataStorage.SaveObject(guild, Path.Combine(DataStorage.ResDirectory, "guild.json"), true);
 		}
 	}
 }

@@ -53,7 +53,7 @@ namespace Bot
 					services.AddSingleton(new DiscordSocketClient(new DiscordSocketConfig
 					{
 						AlwaysDownloadUsers = true,
-						LogLevel = LogSeverity.Warning,
+						LogLevel = LogSeverity.Verbose,
 						DefaultRetryMode = RetryMode.AlwaysRetry,
 						MessageCacheSize = 0
 					}));

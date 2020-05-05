@@ -5,8 +5,7 @@ using System.Threading.Tasks;
 
 namespace Bot.Preconditions
 {
-	[AttributeUsage(AttributeTargets.Class | AttributeTargets.Method, AllowMultiple = true, Inherited = true)]
-	public sealed class RequireGuildOwner : PreconditionAttribute
+	internal sealed class RequireGuildOwner : PreconditionAttribute
 	{
 		public override Task<PreconditionResult> CheckPermissionsAsync(ICommandContext context, CommandInfo command, IServiceProvider services)
 		{

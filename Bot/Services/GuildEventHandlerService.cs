@@ -21,10 +21,16 @@ namespace Bot.Services
 
 		public void Configure()
 		{
-			discord.MessageReceived += Client_MessageReceived;
+			discord.MessageReceived += Discord_MessageReceived;
+			discord.UserVoiceStateUpdated += Discord_UserVoiceStateUpdated;
 		}
 
-		private Task Client_MessageReceived(SocketMessage message)
+		private Task Discord_UserVoiceStateUpdated(SocketUser user, SocketVoiceState oldState, SocketVoiceState newState)
+		{
+			return Task.CompletedTask;
+		}
+
+		private Task Discord_MessageReceived(SocketMessage message)
 		{
 			//Ignore messages from bots
 			if (message.Author.IsBot) return Task.CompletedTask;
