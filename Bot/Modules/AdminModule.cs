@@ -1,12 +1,10 @@
 ﻿using Bot.Core;
-using Bot.Models;
+
 using Discord;
 using Discord.Addons.Interactive;
 using Discord.Commands;
 using Discord.WebSocket;
-using System;
-using System.Collections.Generic;
-using System.Text;
+
 using System.Threading.Tasks;
 
 namespace Bot.Modules
@@ -17,7 +15,12 @@ namespace Bot.Modules
 		[Command("settings")]
 		public async Task GetGuildSettings()
 		{
+			var roleName = "Нет";
+
 			var role = Context.Guild.GetRole(GuildData.guild.ModRole);
+			if (role != null)
+				roleName = role.Name;
+
 			var embed = new EmbedBuilder
 			{
 				Author = new EmbedAuthorBuilder
@@ -27,8 +30,8 @@ namespace Bot.Modules
 				},
 				Color = Color.LightOrange,
 				Description =
-				$"Роль модератора: **{role.Name ?? "Нет"}**" +
-				$"Радужных ролей: {GuildData.guild.rainbowRoles.Count}"
+				$"- Роль модератора: **{roleName}**\n" +
+				$"- Радужных ролей: **{GuildData.guild.rainbowRoles.Count}**\n"
 			};
 
 			await ReplyAsync(embed: embed.Build());
@@ -42,13 +45,13 @@ namespace Bot.Modules
 				GuildData.guild.ModRole = 0;
 				GuildData.SaveGuild();
 
-				await ReplyAsync($"remove");
+				await ReplyAsync($":no_entry_sign: Роль исключена из списка модераторов.");
 			}
 			else
 			{
 				GuildData.guild.ModRole = role.Id;
 				GuildData.SaveGuild();
-				await ReplyAsync($"saved");
+				await ReplyAsync($":floppy_disk: Роль сохранена как модераторская.");
 			}
 		}
 	}

@@ -1,14 +1,13 @@
 ﻿using Bot.Core;
+
 using Discord;
-using Discord.Rest;
 using Discord.WebSocket;
+
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
+
 using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading;
 using System.Threading.Tasks;
 
 namespace Bot.Services
@@ -33,14 +32,14 @@ namespace Bot.Services
 			try
 			{
 				//Load or create user account
-				var userAccount = UserAccounts.GetUser(user.Id);
+				var userAccount = UserAccounts.GetUser(user);
 
 				var now = DateTime.Now;
 
 				if (now < userAccount.LastXPMessage.AddSeconds(MessageXPCooldown))
 				{
 					userAccount.SendedMsg++;
-					UserAccounts.SaveAccount(user.Id);
+					UserAccounts.SaveAccount(user);
 				}
 				else
 				{
@@ -52,7 +51,7 @@ namespace Bot.Services
 					userAccount.XP += Exp;
 					userAccount.SendedMsg++;
 
-					UserAccounts.SaveAccount(user.Id);
+					UserAccounts.SaveAccount(user);
 
 					//get new level value
 					//uint newLevel = userAccount.LevelNumber;
@@ -79,11 +78,11 @@ namespace Bot.Services
 		internal void UpdMsgCount(IUser user)
 		{
 			//Get acc
-			var userAccount = UserAccounts.GetUser(user.Id);
+			var userAccount = UserAccounts.GetUser(user);
 			//Increment updated messages value
 			userAccount.UpdatedMsg++;
 			//Save account
-			UserAccounts.SaveAccount(user.Id);
+			UserAccounts.SaveAccount(user);
 		}
 		internal async Task DelMsgCountAsync(ISocketMessageChannel channel)
 		{
@@ -98,11 +97,11 @@ namespace Bot.Services
 				if (audit.Action == ActionType.MessageDeleted)
 				{
 					//Get acc
-					var userAccount = UserAccounts.GetUser(audit.User.Id);
+					var userAccount = UserAccounts.GetUser(audit.User);
 					//Increment updated messages value
 					userAccount.DeletedMsg++;
 					//Save account
-					UserAccounts.SaveAccount(audit.User.Id);
+					UserAccounts.SaveAccount(audit.User);
 				}
 			}
 		}

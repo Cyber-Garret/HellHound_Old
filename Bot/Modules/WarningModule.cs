@@ -1,21 +1,22 @@
-﻿using Discord.Commands;
+﻿using Bot.Core;
+using Bot.Models;
+using Bot.Properties;
+
+using Discord;
+using Discord.Addons.Interactive;
+using Discord.Commands;
 using Discord.WebSocket;
+
 using System;
 using System.Collections.Generic;
-using System.Net.Sockets;
-using System.Text;
-using System.Threading.Tasks;
-using Discord;
-using Bot.Core;
-using Bot.Models;
-using Discord.Addons.Interactive;
 using System.Linq;
+using System.Threading.Tasks;
 
 namespace Bot.Modules
 {
 	public class WarningModule : InteractiveBase
 	{
-		[Command("warn")]
+		[Command("предупреждение")]
 		[RequireContext(ContextType.Guild)]
 		public async Task WarnUser(SocketGuildUser user = null, string reason = null)
 		{
@@ -26,29 +27,34 @@ namespace Bot.Modules
 			{
 				if (user == null || string.IsNullOrWhiteSpace(reason))
 				{
-					await ReplyAsync(":no_entry_sign: Нужно указать кто провинился и причину.\nФормат: **!warn @User причина**");
+					await ReplyAsync(":no_entry_sign: Нужно указать кто провинился и причину.\nФормат: **!предупреждение @User причина**");
 				}
 				else
 				{
-					var target = UserAccounts.GetUser(user.Id);
+					var target = UserAccounts.GetUser(user);
 					target.NumberOfWarnings++;
 					target.Warnings.Add(new Warning
 					{
 						Reason = reason
 					});
-					UserAccounts.SaveAccount(user.Id);
 
 					await ReplyAsync($":floppy_disk: Пользователь {user.Nickname ?? user.Username} получил предупреждение по причине:\n**{reason}**");
+
+					UserAccounts.SaveAccount(user);
 				}
+			}
+			else
+			{
+				await ReplyAsync(Resources.Disallow);
 			}
 		}
 
-		[Command("warns")]
+		[Command("предупреждения")]
 		public async Task GetWarnings(SocketGuildUser mentionedUser = null)
 		{
 			var target = mentionedUser ?? (SocketGuildUser)Context.User;
 
-			var user = UserAccounts.GetUser(target.Id);
+			var user = UserAccounts.GetUser(target);
 			if (user.Warnings.Count > 0)
 			{
 				var message = new PaginatedMessage
@@ -63,7 +69,7 @@ namespace Bot.Modules
 					{
 						DisplayInformationIcon = false,
 						JumpDisplayOptions = JumpDisplayOptions.Never,
-						FooterFormat = "Страница {0}/{1}",
+						FooterFormat = "Предупреждение {0} из {1}",
 						Timeout = TimeSpan.FromMinutes(1)
 					}
 				};

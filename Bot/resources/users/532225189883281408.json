@@ -1,0 +1,19 @@
+﻿{
+  "Id": 532225189883281408,
+  "Reputation": 0,
+  "XP": 0,
+  "SendedMsg": 0,
+  "UpdatedMsg": 0,
+  "DeletedMsg": 0,
+  "InVoice": "00:00:00",
+  "LastRep": "2020-05-04T21:57:20.9898583+03:00",
+  "LastXPMessage": "2020-05-06T21:57:20.9898632+03:00",
+  "LevelNumber": 0,
+  "NumberOfWarnings": 1,
+  "Warnings": [
+    {
+      "CreateDate": "2020-05-06T21:57:20.9981674+03:00",
+      "Reason": "123"
+    }
+  ]
+}

@@ -1,15 +1,15 @@
 ﻿{
   "Id": 316272461291192322,
   "Reputation": 0,
-  "XP": 442,
-  "SendedMsg": 43,
+  "XP": 650,
+  "SendedMsg": 60,
   "UpdatedMsg": 3,
   "DeletedMsg": 1,
   "InVoice": "00:00:00",
   "LastRep": "2020-05-03T15:23:31.1638981+03:00",
-  "LastXPMessage": "2020-05-06T14:55:23.5798173+03:00",
-  "LevelNumber": 2,
-  "NumberOfWarnings": 3,
+  "LastXPMessage": "2020-05-06T22:20:12.8850311+03:00",
+  "LevelNumber": 3,
+  "NumberOfWarnings": 8,
   "Warnings": [
     {
       "CreateDate": "2020-05-05T21:29:00.707895+03:00",
@@ -22,6 +22,26 @@
     {
       "CreateDate": "2020-05-06T14:52:32.0432366+03:00",
       "Reason": "Тест3"
+    },
+    {
+      "CreateDate": "2020-05-06T21:54:47.8149088+03:00",
+      "Reason": "test5"
+    },
+    {
+      "CreateDate": "2020-05-06T21:56:21.2674607+03:00",
+      "Reason": "test6"
+    },
+    {
+      "CreateDate": "2020-05-06T21:56:47.1275548+03:00",
+      "Reason": "test7"
+    },
+    {
+      "CreateDate": "2020-05-06T21:57:43.6801731+03:00",
+      "Reason": "123"
+    },
+    {
+      "CreateDate": "2020-05-06T22:04:19.728076+03:00",
+      "Reason": "32144"
     }
   ]
 }

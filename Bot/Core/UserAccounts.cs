@@ -1,9 +1,9 @@
 ﻿using Bot.Models;
-using System;
+
+using Discord;
+
 using System.Collections.Concurrent;
-using System.Collections.Generic;
 using System.IO;
-using System.Text;
 
 namespace Bot.Core
 {
@@ -21,19 +21,33 @@ namespace Bot.Core
 				userAccounts = new ConcurrentDictionary<ulong, User>();
 		}
 
-		internal static User GetUser(ulong UserId)
+
+		/// <summary>
+		/// Get or create and return user account
+		/// </summary>
+		/// <param name="user">Discord generic user</param>
+		/// <returns>user account</returns>
+		internal static User GetUser(IUser user)
 		{
-			return userAccounts.GetOrAdd(UserId, (key) =>
+			if (user.IsBot) return null;
+
+			return userAccounts.GetOrAdd(user.Id, (key) =>
 			{
-				var newAccount = new User { Id = UserId };
-				DataStorage.SaveObject(newAccount, Path.Combine(DataStorage.UsersDirectory, $"{UserId}.json"), useIndentations: true);
+				var newAccount = new User { Id = user.Id };
+				DataStorage.SaveObject(newAccount, Path.Combine(DataStorage.UsersDirectory, $"{user.Id}.json"), useIndentations: true);
 				return newAccount;
 			});
 		}
 
-		internal static void SaveAccount(ulong UserId)
+		/// <summary>
+		/// Rewrite user file on hard drive
+		/// </summary>
+		/// <param name="user">Discord generic user</param>
+		internal static void SaveAccount(IUser user)
 		{
-			DataStorage.SaveObject(GetUser(UserId), Path.Combine(DataStorage.UsersDirectory, $"{UserId}.json"), useIndentations: true);
+			if (user.IsBot) return;
+
+			DataStorage.SaveObject(GetUser(user), Path.Combine(DataStorage.UsersDirectory, $"{user.Id}.json"), useIndentations: true);
 
 		}
 	}

@@ -4,7 +4,6 @@ using Discord.WebSocket;
 using Microsoft.Extensions.DependencyInjection;
 
 using System;
-using System.Threading.Channels;
 using System.Threading.Tasks;
 
 namespace Bot.Services
@@ -26,7 +25,7 @@ namespace Bot.Services
 		{
 			discord.MessageReceived += MessageReceived;
 			discord.MessageUpdated += MessageUpdated;
-			discord.MessageDeleted += MessageDeleted;
+			//discord.MessageDeleted += MessageDeleted;
 			discord.UserVoiceStateUpdated += UserVoiceStateUpdated;
 		}
 
@@ -60,6 +59,7 @@ namespace Bot.Services
 			 });
 		}
 
+		//TODO fix correct save data.
 		private async Task MessageDeleted(Cacheable<IMessage, ulong> cache, ISocketMessageChannel channel)
 		{
 			await Task.Run(async () =>

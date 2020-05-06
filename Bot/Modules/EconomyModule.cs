@@ -1,12 +1,11 @@
 ﻿using Bot.Core;
-using Bot.Models;
 using Bot.Preconditions;
+
 using Discord;
 using Discord.Commands;
 using Discord.WebSocket;
+
 using System;
-using System.Collections.Generic;
-using System.Text;
 using System.Threading.Tasks;
 
 namespace Bot.Modules
@@ -21,7 +20,7 @@ namespace Bot.Modules
 		{
 			SocketGuildUser target = (SocketGuildUser)mentionedUser ?? (SocketGuildUser)Context.User;
 
-			var user = UserAccounts.GetUser(target.Id);
+			var user = UserAccounts.GetUser(target);
 			var requiredXp = (Math.Pow(user.LevelNumber + 1, 2) * 50);
 
 			var auth = new EmbedAuthorBuilder()
@@ -43,8 +42,7 @@ namespace Bot.Modules
 			embed.AddField("Косяки", user.NumberOfWarnings, true);
 			embed.AddField("Текстовые сообщения:",
 				$"- Написанно: **{user.SendedMsg}**\n" +
-				$"- Исправлено: **{user.UpdatedMsg}**\n" +
-				$"- Удалено: **{user.DeletedMsg}**\n", true);
+				$"- Исправлено: **{user.UpdatedMsg}**\n", true);
 			embed.AddField("В голосе:", $"{user.InVoice.Hours}:{user.InVoice.Minutes}", true);
 
 			await ReplyAsync(embed: embed.Build());
