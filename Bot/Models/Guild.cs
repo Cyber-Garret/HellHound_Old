@@ -4,6 +4,7 @@ namespace Bot.Models
 {
 	public class Guild
 	{
+		public ulong ModRole { get; set; } = 0;
 		public List<RainbowRole> rainbowRoles = new List<RainbowRole>();
 	}
 

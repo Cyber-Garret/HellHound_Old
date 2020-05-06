@@ -52,7 +52,7 @@ namespace Bot.Services
 		private async Task MessageUpdated(Cacheable<IMessage, ulong> cache, SocketMessage message, ISocketMessageChannel channel)
 		{
 			//Ignore messages from bots
-			if (message.Author.IsBot) return;
+			if (message.Author.IsBot || message.Author.Id == 0) return;
 
 			await Task.Run(() =>
 			 {

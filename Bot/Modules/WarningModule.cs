@@ -9,30 +9,37 @@ using Discord;
 using Bot.Core;
 using Bot.Models;
 using Discord.Addons.Interactive;
+using System.Linq;
 
 namespace Bot.Modules
 {
-	public class WarningModule : InteractiveBase<SocketCommandContext>
+	public class WarningModule : InteractiveBase
 	{
 		[Command("warn")]
-		[RequireUserPermission(GuildPermission.Administrator)]
+		[RequireContext(ContextType.Guild)]
 		public async Task WarnUser(SocketGuildUser user = null, string reason = null)
 		{
-			if (user == null || string.IsNullOrWhiteSpace(reason))
-			{
-				await ReplyAsync(":no_entry_sign: Нужно указать кто провинился и причину.\nФормат: **!warn @User причина**");
-			}
-			else
-			{
-				var target = UserAccounts.GetUser(user.Id);
-				target.NumberOfWarnings++;
-				target.Warnings.Add(new Warning
-				{
-					Reason = reason
-				});
-				UserAccounts.SaveAccount(user.Id);
+			var initiator = (SocketGuildUser)Context.User;
+			var role = Context.Guild.GetRole(GuildData.guild.ModRole);
 
-				await ReplyAsync($":floppy_disk: Пользователь {user.Nickname ?? user.Username} получил предупреждение по причине:\n**{reason}**");
+			if (initiator.Roles.Contains(role) && role != null)
+			{
+				if (user == null || string.IsNullOrWhiteSpace(reason))
+				{
+					await ReplyAsync(":no_entry_sign: Нужно указать кто провинился и причину.\nФормат: **!warn @User причина**");
+				}
+				else
+				{
+					var target = UserAccounts.GetUser(user.Id);
+					target.NumberOfWarnings++;
+					target.Warnings.Add(new Warning
+					{
+						Reason = reason
+					});
+					UserAccounts.SaveAccount(user.Id);
+
+					await ReplyAsync($":floppy_disk: Пользователь {user.Nickname ?? user.Username} получил предупреждение по причине:\n**{reason}**");
+				}
 			}
 		}
 
@@ -52,18 +59,33 @@ namespace Bot.Modules
 						IconUrl = target.GetAvatarUrl() ?? target.GetDefaultAvatarUrl()
 					},
 					Color = Color.DarkOrange,
-					Content = "test",
 					Options = new PaginatedAppearanceOptions
 					{
-						Timeout = new TimeSpan(0, 1, 0)
+						DisplayInformationIcon = false,
+						JumpDisplayOptions = JumpDisplayOptions.Never,
+						FooterFormat = "Страница {0}/{1}",
+						Timeout = TimeSpan.FromMinutes(1)
 					}
 				};
 
+				var warns = new List<PaginatedMessage.Page>();
 				foreach (var item in user.Warnings)
 				{
-					message.Pages.Add
+					warns.Add(new PaginatedMessage.Page
+					{
+						Description = $"**Предупреждение было выдано:** {item.CreateDate:dd.MM.yyyy HH:mm}\n**Причина:** {item.Reason}"
+					});
 				}
-				await PagedReplyAsync(message);
+				message.Pages = warns;
+
+				var reactionList = new ReactionList
+				{
+					Forward = true,
+					Backward = true,
+					Trash = true
+				};
+
+				await PagedReplyAsync(message, reactionList);
 			}
 		}
 	}

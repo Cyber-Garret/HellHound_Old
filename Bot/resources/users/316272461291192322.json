@@ -1,15 +1,15 @@
 ﻿{
   "Id": 316272461291192322,
   "Reputation": 0,
-  "XP": 234,
-  "SendedMsg": 22,
-  "UpdatedMsg": 2,
+  "XP": 442,
+  "SendedMsg": 43,
+  "UpdatedMsg": 3,
   "DeletedMsg": 1,
   "InVoice": "00:00:00",
   "LastRep": "2020-05-03T15:23:31.1638981+03:00",
-  "LastXPMessage": "2020-05-05T21:33:24.8328084+03:00",
+  "LastXPMessage": "2020-05-06T14:55:23.5798173+03:00",
   "LevelNumber": 2,
-  "NumberOfWarnings": 2,
+  "NumberOfWarnings": 3,
   "Warnings": [
     {
       "CreateDate": "2020-05-05T21:29:00.707895+03:00",
@@ -18,6 +18,10 @@
     {
       "CreateDate": "2020-05-05T21:29:56.0321981+03:00",
       "Reason": "васян"
+    },
+    {
+      "CreateDate": "2020-05-06T14:52:32.0432366+03:00",
+      "Reason": "Тест3"
     }
   ]
 }
