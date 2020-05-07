@@ -6,7 +6,7 @@ namespace Bot.Models
 	public class User
 	{
 		public ulong Id { get; set; }
-		public uint Reputation { get; set; } = 0;
+		public sbyte Reputation { get; set; } = 0;
 		public uint XP { get; set; } = 0;
 
 		/// <summary>

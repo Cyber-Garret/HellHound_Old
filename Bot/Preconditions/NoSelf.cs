@@ -15,7 +15,7 @@ namespace Site.Bot.Preconditions
 		{
 			var user = value is IUser ? (IUser)value : null;
 			if ((user != null) && (context.User.Id == user.Id))
-				return Task.FromResult(PreconditionResult.FromError("Страж, ты не можешь использовать эту команду на себя."));
+				return Task.FromResult(PreconditionResult.FromError("Ты не можешь использовать эту команду на себя."));
 
 			return Task.FromResult(PreconditionResult.FromSuccess());
 		}
