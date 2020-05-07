@@ -1,5 +1,5 @@
 ﻿using Bot.Core;
-
+using Bot.Properties;
 using Discord;
 using Discord.Addons.Interactive;
 using Discord.Commands;
@@ -54,7 +54,23 @@ namespace Bot.Modules
 				await ReplyAsync($":floppy_disk: Роль сохранена как модераторская.");
 			}
 		}
-	}
 
+		[Command("notif")]
+		public async Task SetNotifChannel(ITextChannel channel)
+		{
+
+			if (channel == null)
+			{
+				GuildData.guild.NotificationChannel = 0;
+				await ReplyAsync(Resources.NotifOff);
+			}
+			else
+			{
+				GuildData.guild.NotificationChannel = channel.Id;
+				await ReplyAsync(string.Format(Resources.NotifOn, channel.Mention));
+			}
+			GuildData.SaveGuild();
+		}
+	}
 }
 

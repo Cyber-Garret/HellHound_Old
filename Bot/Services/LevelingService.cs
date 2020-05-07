@@ -1,9 +1,10 @@
 ﻿using Bot.Core;
-
+using Bot.Properties;
 using Discord;
 using Discord.WebSocket;
 
 using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 
 using System;
@@ -15,12 +16,14 @@ namespace Bot.Services
 	public class LevelingService
 	{
 		private readonly ILogger<LevelingService> logger;
+		private readonly DiscordSocketClient discord;
 
 		private readonly double MessageXPCooldown;
 		private readonly uint Exp;
 		public LevelingService(IServiceProvider service, ILogger<LevelingService> logger, IConfiguration configuration)
 		{
 			this.logger = logger;
+			discord = service.GetRequiredService<DiscordSocketClient>();
 			MessageXPCooldown = configuration.GetSection("Economy:MessageXPCooldown").Get<double>();
 			Exp = configuration.GetSection("Economy:MessageExp").Get<uint>();
 		}
@@ -54,19 +57,19 @@ namespace Bot.Services
 					UserAccounts.SaveAccount(user);
 
 					//get new level value
-					//uint newLevel = userAccount.LevelNumber;
-					//User level up?
-					//if (oldLevel != newLevel)
-					//{
+					uint newLevel = userAccount.LevelNumber;
+					//User level up ?
+					if (oldLevel != newLevel)
+					{
 
-					//	if (config.WelcomeChannel != 0)
-					//	{
-					//		await _discord.GetGuild(config.Id).GetTextChannel(config.WelcomeChannel)
-					//		   .SendMessageAsync($"Поздравляю {user.Nickname ?? user.Username}, он только что поднялся до уровня **{newLevel}**!");
-					//		return;
-					//	}
-					//}
-					//else return;
+						if (GuildData.guild.NotificationChannel != 0)
+						{
+							var message = string.Format(Resources.LvlUp, user.Mention, newLevel);
+
+							discord.Guilds.First().GetTextChannel(GuildData.guild.NotificationChannel).SendMessageAsync(message);
+							return;
+						}
+					}
 				}
 			}
 			catch (Exception ex)

@@ -68,5 +68,32 @@ namespace Bot.Properties {
                 return ResourceManager.GetString("Disallow", resourceCulture);
             }
         }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Поздравляю {0}, за свою активность среди гончих он(а) поднял(а) свой уровень до **{1}** ур.!.
+        /// </summary>
+        internal static string LvlUp {
+            get {
+                return ResourceManager.GetString("LvlUp", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Оповещения выключены..
+        /// </summary>
+        internal static string NotifOff {
+            get {
+                return ResourceManager.GetString("NotifOff", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Оповещения включены в канал: {0}.
+        /// </summary>
+        internal static string NotifOn {
+            get {
+                return ResourceManager.GetString("NotifOn", resourceCulture);
+            }
+        }
     }
 }
