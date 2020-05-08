@@ -121,7 +121,7 @@
     <value>:angry: У тебя нет права.</value>
   </data>
   <data name="LvlUp" xml:space="preserve">
-    <value>Поздравляю {0}, за свою активность среди гончих он(а) поднял(а) свой уровень до **{1}** ур.!</value>
+    <value>Поздравляю {0}, за свою активность среди гончих он(а) поднял(а) свой уровень до **{1}**!</value>
   </data>
   <data name="NotifOff" xml:space="preserve">
     <value>Оповещения выключены.</value>

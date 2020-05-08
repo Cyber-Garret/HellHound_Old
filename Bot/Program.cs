@@ -67,7 +67,8 @@ namespace Bot
 
 					//Quartz Jobs 
 					services.AddSingleton<ColorChangeRoleJob>();
-					services.AddSingleton(new JobSchedule(typeof(ColorChangeRoleJob), "0 0/1 * * * ?"));
+					services.AddSingleton(new JobSchedule(typeof(ColorChangeRoleJob), builtConfig["Bot:RainbowRolesCronExp"]));
+					log.Information($"Rainbow role cron expression: \"{builtConfig["Bot:RainbowRolesCronExp"]}\"");
 				})
 					.ConfigureAppConfiguration((hostContext, config) =>
 				{
