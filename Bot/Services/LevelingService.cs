@@ -1,5 +1,6 @@
 ﻿using Bot.Core;
 using Bot.Properties;
+
 using Discord;
 using Discord.WebSocket;
 

@@ -4,21 +4,25 @@ using Discord;
 
 using System.Collections.Concurrent;
 using System.IO;
+using System.Threading.Tasks;
 
 namespace Bot.Core
 {
 	internal static class UserAccounts
 	{
-		private static readonly ConcurrentDictionary<ulong, User> userAccounts;
+		private static ConcurrentDictionary<ulong, User> userAccounts = new ConcurrentDictionary<ulong, User>();
 
-		static UserAccounts()
+		/// <summary>
+		/// Load all json files into thread-safe collection for future work
+		/// </summary>
+		internal static Task LoadUserAccountsAsync()
 		{
 			var result = DataStorage.LoadJSONFromHDD<User>(DataStorage.UsersDirectory);
 
 			if (result != null)
 				userAccounts = result.ToConcurrentDictionary(k => k.Id);
-			else
-				userAccounts = new ConcurrentDictionary<ulong, User>();
+
+			return Task.CompletedTask;
 		}
 
 

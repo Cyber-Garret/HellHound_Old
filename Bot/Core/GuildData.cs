@@ -1,26 +1,27 @@
 ﻿using Bot.Models;
 
 using System.IO;
-using System.Linq;
+using System.Threading.Tasks;
 
 namespace Bot.Core
 {
 	internal static class GuildData
 	{
-		public static Guild guild;
-		static GuildData()
+		private const string FileName = "guild.json";
+		public static Guild guild = new Guild();
+		internal static Task LoadGuildDataAsync()
 		{
-			var result = DataStorage.LoadJSONFromHDD<Guild>(DataStorage.ResDirectory);
+			var result = DataStorage.LoadSingleJSONFromHDD<Guild>(Path.Combine(DataStorage.ResDirectory, FileName));
 
-			if (result.Count > 0)
-				guild = result.First();
-			else
-				guild = new Guild();
+			if (result != null)
+				guild = result;
+
+			return Task.CompletedTask;
 		}
 
 		internal static void SaveGuild()
 		{
-			DataStorage.SaveObject(guild, Path.Combine(DataStorage.ResDirectory, "guild.json"), true);
+			DataStorage.SaveObject(guild, Path.Combine(DataStorage.ResDirectory, FileName), true);
 		}
 	}
 }

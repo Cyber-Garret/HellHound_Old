@@ -1,14 +1,14 @@
 ﻿{
   "Id": 316272461291192322,
-  "Reputation": 0,
-  "XP": 650,
-  "SendedMsg": 60,
+  "Reputation": 1,
+  "XP": 858,
+  "SendedMsg": 80,
   "UpdatedMsg": 3,
   "DeletedMsg": 1,
   "InVoice": "00:00:00",
-  "LastRep": "2020-05-03T15:23:31.1638981+03:00",
-  "LastXPMessage": "2020-05-06T22:20:12.8850311+03:00",
-  "LevelNumber": 3,
+  "LastRep": "2020-05-08T07:58:18.5823779Z",
+  "LastXPMessage": "2020-05-08T11:02:59.9121323+03:00",
+  "LevelNumber": 4,
   "NumberOfWarnings": 8,
   "Warnings": [
     {

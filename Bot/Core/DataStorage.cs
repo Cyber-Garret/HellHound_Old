@@ -42,6 +42,22 @@ namespace Bot.Core
 		}
 
 		/// <summary>
+		/// Load single json file from HDD to class
+		/// </summary>
+		/// <typeparam name="T">Class</typeparam>
+		/// <param name="filePath">File path included file name</param>
+		/// <returns>Loaded json data into class</returns>
+		internal static T LoadSingleJSONFromHDD<T>(string filePath)
+		{
+			if (File.Exists(filePath))
+			{
+				return RestoreObject<T>(filePath);
+			}
+			else
+				return default;
+		}
+
+		/// <summary>
 		/// Any IEnumerable to ConcurrentDictionary
 		/// </summary>
 		internal static ConcurrentDictionary<TKey, TValue> ToConcurrentDictionary<TKey, TValue>
@@ -79,12 +95,13 @@ namespace Bot.Core
 
 		private static string GetOrCreateFileContents(string filePath)
 		{
-			if (!File.Exists(filePath))
+			if (File.Exists(filePath))
+				return File.ReadAllText(filePath, Encoding.UTF8);
+			else
 			{
 				File.WriteAllText(filePath, "", Encoding.UTF8);
-				return "";
+				return string.Empty;
 			}
-			return File.ReadAllText(filePath, Encoding.UTF8);
 		}
 	}
 }

@@ -4,7 +4,9 @@ using Bot.Preconditions;
 using Discord;
 using Discord.Commands;
 using Discord.WebSocket;
+
 using Site.Bot.Preconditions;
+
 using System;
 using System.Threading.Tasks;
 
@@ -49,45 +51,46 @@ namespace Bot.Modules
 		}
 
 		[Command("лайк")]
-		[Cooldown(300)]
-		public async Task UpRep([NoSelf]IUser user)
+		//[Cooldown(60)]
+		public async Task UpRep([NoSelf]IUser user = null)
 		{
-			//Get user can add reputation?
-			var sender = UserAccounts.GetUser(Context.User);
-			var difference = DateTime.UtcNow - sender.LastRep.AddDays(1);
-
-			if (difference.TotalHours < 0)
+			if (user == null || user.IsBot)
 			{
-				var embed = new EmbedBuilder
-				{
-					Color = Color.Red,
-					Description = $":diamond_shape_with_a_dot_inside: :clock1:  | **{Context.User.Username}, ты уже кому-то повышал репутацию.\nТы сможешь кому-то поднять репутацию через {difference:%h} ч. {difference:%m} мин.**"
-				};
-				await ReplyAsync(embed: embed.Build());
+				await ReplyAsync("Должен быть указан получатель.\nНапример: **!лайк @Миша**");
 			}
 			else
 			{
-				sender.LastRep = DateTime.UtcNow;
-				UserAccounts.SaveAccount(Context.User);
-				//Add Reputation to mentioned user
-				var recipient = UserAccounts.GetUser(user);
-				recipient.Reputation++;
-				UserAccounts.SaveAccount(user);
+				//Get user can add reputation?
+				var sender = UserAccounts.GetUser(Context.User);
+				var difference = DateTime.Now - sender.LastRep.AddDays(1);
 
-				var embed = new EmbedBuilder
+				if (difference.TotalMinutes < 1)
 				{
-					Color = Color.Gold,
-					Description = $":diamond_shape_with_a_dot_inside: | Внимание {user.Mention}!\nТвоя репутация была повышена {Context.User.Mention}, не забудь его поблагодарить."
-				};
+					var embed = new EmbedBuilder
+					{
+						Color = Color.Red,
+						Description = $":diamond_shape_with_a_dot_inside: :clock1:  | **{Context.User.Username}, ты уже кому-то повышал репутацию.\nТы сможешь кому-то поднять репутацию через {difference:%h} ч. {difference:%m} мин.**"
+					};
+					await ReplyAsync(embed: embed.Build());
+				}
+				else
+				{
+					sender.LastRep = DateTime.UtcNow;
+					UserAccounts.SaveAccount(Context.User);
+					//Add Reputation to mentioned user
+					var recipient = UserAccounts.GetUser(user);
+					recipient.Reputation++;
+					UserAccounts.SaveAccount(user);
 
-				await ReplyAsync(embed: embed.Build());
+					var embed = new EmbedBuilder
+					{
+						Color = Color.Gold,
+						Description = $":diamond_shape_with_a_dot_inside: | Внимание {user.Mention}!\nТвоя репутация была повышена {Context.User.Mention}, не забудь его поблагодарить."
+					};
+
+					await ReplyAsync(embed: embed.Build());
+				}
 			}
-		}
-
-		[Command("дизлайк")]
-		public async Task DownRep(SocketGuildUser user)
-		{
-
 		}
 	}
 }

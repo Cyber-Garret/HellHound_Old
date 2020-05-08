@@ -1,3 +1,4 @@
+using Bot.Core;
 using Bot.Services;
 
 using Discord;
@@ -44,6 +45,9 @@ namespace Bot
 				service.GetRequiredService<GuildEventHandlerService>().Configure();
 				await service.GetRequiredService<CommandHandlerService>().ConfigureAsync();
 
+				//Before bot login and ready for work, first need Load users and guild data from HDD
+				await GuildData.LoadGuildDataAsync();
+				await UserAccounts.LoadUserAccountsAsync();
 
 				await discord.LoginAsync(TokenType.Bot, token);
 				await discord.StartAsync();
