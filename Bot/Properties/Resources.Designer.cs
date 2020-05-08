@@ -70,7 +70,7 @@ namespace Bot.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Поздравляю {0}, за свою активность среди гончих он(а) поднял(а) свой уровень до **{1}** ур.!.
+        ///   Looks up a localized string similar to Поздравляю {0}, за свою активность среди гончих он(а) поднял(а) свой уровень до **{1}**!.
         /// </summary>
         internal static string LvlUp {
             get {
