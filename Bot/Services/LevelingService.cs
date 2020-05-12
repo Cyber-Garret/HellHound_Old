@@ -64,7 +64,7 @@ namespace Bot.Services
 
 						if (GuildData.guild.NotificationChannel != 0)
 						{
-							var message = string.Format(Resources.LvlUp, user.Mention, newLevel);
+							var message = string.Format(Resources.LvlUp, user.Username, newLevel);
 
 							discord.Guilds.First().GetTextChannel(GuildData.guild.NotificationChannel).SendMessageAsync(message);
 							return;
