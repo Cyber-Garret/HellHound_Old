@@ -1,49 +1,57 @@
 using Bot.Core.QuartzJobs;
 using Bot.Services;
-
 using Discord;
-using Discord.Addons.Interactive;
 using Discord.Commands;
 using Discord.WebSocket;
-
-using Microsoft.Extensions.Configuration;
+using JetBrains.Annotations;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using Microsoft.Extensions.Logging;
-
 using Quartz;
 using Quartz.Impl;
 using Quartz.Spi;
-
 using Serilog;
-using Serilog.Core;
-
 using System;
 
 namespace Bot
 {
+
+	[UsedImplicitly]
 	public class Program
 	{
-		public static void Main(string[] args)
+		public static int Main(string[] args)
 		{
-			CreateHostBuilder(args).Build().Run();
-		}
+			Log.Logger = new LoggerConfiguration()
+				.WriteTo.Console()
+				.CreateBootstrapLogger();
 
-		public static IHostBuilder CreateHostBuilder(string[] args)
-		{
-			var builtConfig = CreateConfigBuilder(args);
-
-			var log = CreateSerilogLogger(builtConfig);
+			Log.Information("Bootstraping HellHound bot...");
 
 			try
 			{
-				return Host.CreateDefaultBuilder(args)
-					.ConfigureLogging(logger =>
-					{
-						logger.ClearProviders();
-						logger.AddSerilog(logger: log, dispose: true);
-					})
-					.ConfigureServices((hostContext, services) =>
+				CreateHostBuilder(args).Build().Run();
+				Log.Information("Stopped cleanly");
+				return 0;
+			}
+			catch (Exception exception)
+			{
+				Log.Fatal(exception, "An unhandled exception occurred during bootstrapping");
+				return 1;
+			}
+			finally
+			{
+				Log.CloseAndFlush();
+			}
+		}
+
+		private static IHostBuilder CreateHostBuilder(string[] args)
+		{
+			return Host.CreateDefaultBuilder(args)
+				.UseSerilog((context, services, configuration) => configuration
+					.ReadFrom.Configuration(context.Configuration)
+					.ReadFrom.Services(services)
+					.Enrich.FromLogContext()
+					.WriteTo.Console())
+				.ConfigureServices((hostContext, services) =>
 				{
 					services.AddHostedService<Bot>();
 					//Quartz services
@@ -56,63 +64,23 @@ namespace Bot
 						AlwaysDownloadUsers = true,
 						LogLevel = LogSeverity.Verbose,
 						DefaultRetryMode = RetryMode.AlwaysRetry,
-						MessageCacheSize = 1000
+						MessageCacheSize = 1000,
+						GatewayIntents = GatewayIntents.All
 					}));
 					services.AddSingleton<CommandService>()
-					.AddSingleton<LoggingService>()
-					.AddSingleton<CommandHandlerService>()
-					.AddSingleton<GuildEventHandlerService>()
-					.AddSingleton<LevelingService>()
-					.AddSingleton<InteractiveService>();
+						.AddSingleton<LoggingService>()
+						.AddSingleton<CommandHandlerService>()
+						.AddSingleton<GuildEventHandlerService>()
+						.AddSingleton<LevelingService>();
 
-					//Quartz Jobs 
+					//Quartz Jobs
 					services.AddSingleton<ColorChangeRoleJob>();
-					services.AddSingleton(new JobSchedule(typeof(ColorChangeRoleJob), builtConfig["Bot:RainbowRolesCronExp"]));
-					log.Information($"Rainbow role cron expression: \"{builtConfig["Bot:RainbowRolesCronExp"]}\"");
-				})
-					.ConfigureAppConfiguration((hostContext, config) =>
-				{
-					config.AddConfiguration(builtConfig);
+					services.AddSingleton(new JobSchedule(typeof(ColorChangeRoleJob),
+						hostContext.Configuration["Bot:RainbowRolesCronExp"]));
+					Log.Information(
+						$"Rainbow role cron expression: \"{hostContext.Configuration["Bot:RainbowRolesCronExp"]}\"");
 				});
-			}
-			catch (Exception ex)
-			{
-				log.Fatal(ex, "Host builder error");
-				throw;
-			}
-			finally
-			{
-				log.Dispose();
-			}
-
 		}
 
-		private static IConfigurationRoot CreateConfigBuilder(string[] args)
-		{
-			return new ConfigurationBuilder()
-			.AddJsonFile("appsettings.json", optional: false, reloadOnChange: true)
-			.AddCommandLine(args)
-			.Build();
-		}
-
-		private static Logger CreateSerilogLogger(IConfigurationRoot configuration)
-		{
-			// create logger with console output by default
-			var logger = new LoggerConfiguration()
-				.WriteTo.Console();
-			// get path for logging in file from appsettings.json
-			var logPath = configuration["Logging:FilePath"];
-
-			// check if filepath for logging presented
-			if (!string.IsNullOrWhiteSpace(logPath))
-			{
-				logger.WriteTo.File(logPath);
-				return logger.CreateLogger();
-			}
-			else
-			{
-				return logger.CreateLogger();
-			}
-		}
 	}
 }

@@ -50,7 +50,7 @@ namespace Bot.Modules
 
 		[Command("лайк")]
 		[Cooldown(300)]
-		public async Task UpRep([NoSelf]IUser user)
+		public async Task UpRep([NoSelf] IUser user)
 		{
 			//Get user can add reputation?
 			var sender = UserAccounts.GetUser(Context.User);
@@ -82,12 +82,6 @@ namespace Bot.Modules
 
 				await ReplyAsync(embed: embed.Build());
 			}
-		}
-
-		[Command("дизлайк")]
-		public async Task DownRep(SocketGuildUser user)
-		{
-
 		}
 	}
 }

@@ -6,11 +6,6 @@ MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Site", "Site\Site.csproj", "{97132033-A6F5-4F80-B7EA-47E16E9A3DDA}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Bot", "Bot\Bot.csproj", "{0EB3DF88-51DF-481C-907A-75043B934CE4}"
-	ProjectSection(ProjectDependencies) = postProject
-		{94DCE263-B90D-4065-93B3-4CAEBE496009} = {94DCE263-B90D-4065-93B3-4CAEBE496009}
-	EndProjectSection
-EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Discord.Addons.Interactive", "..\Discord.Addons.Interactive\Discord.Addons.Interactive\Discord.Addons.Interactive.csproj", "{94DCE263-B90D-4065-93B3-4CAEBE496009}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -26,10 +21,6 @@ Global
 		{0EB3DF88-51DF-481C-907A-75043B934CE4}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{0EB3DF88-51DF-481C-907A-75043B934CE4}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{0EB3DF88-51DF-481C-907A-75043B934CE4}.Release|Any CPU.Build.0 = Release|Any CPU
-		{94DCE263-B90D-4065-93B3-4CAEBE496009}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{94DCE263-B90D-4065-93B3-4CAEBE496009}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{94DCE263-B90D-4065-93B3-4CAEBE496009}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{94DCE263-B90D-4065-93B3-4CAEBE496009}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
