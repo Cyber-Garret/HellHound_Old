@@ -1,20 +1,16 @@
 ﻿using Bot.Core;
 using Bot.Models;
 using Bot.Properties;
-
-using Discord;
-using Discord.Addons.Interactive;
 using Discord.Commands;
 using Discord.WebSocket;
 
 using System;
-using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
 namespace Bot.Modules
 {
-	public class WarningModule : InteractiveBase
+	public class WarningModule : ModuleBase<SocketCommandContext>
 	{
 		[Command("предупреждение")]
 		[RequireContext(ContextType.Guild)]
@@ -49,50 +45,50 @@ namespace Bot.Modules
 			}
 		}
 
-		[Command("предупреждения")]
-		public async Task GetWarnings(SocketGuildUser mentionedUser = null)
-		{
-			var target = mentionedUser ?? (SocketGuildUser)Context.User;
+		//[Command("предупреждения")]
+		//public async Task GetWarnings(SocketGuildUser mentionedUser = null)
+		//{
+		//	var target = mentionedUser ?? (SocketGuildUser)Context.User;
 
-			var user = UserAccounts.GetUser(target);
-			if (user.Warnings.Count > 0)
-			{
-				var message = new PaginatedMessage
-				{
-					Author = new EmbedAuthorBuilder
-					{
-						Name = $"Предупреждения {target.Nickname ?? target.Username}",
-						IconUrl = target.GetAvatarUrl() ?? target.GetDefaultAvatarUrl()
-					},
-					Color = Color.DarkOrange,
-					Options = new PaginatedAppearanceOptions
-					{
-						DisplayInformationIcon = false,
-						JumpDisplayOptions = JumpDisplayOptions.Never,
-						FooterFormat = "Предупреждение {0} из {1}",
-						Timeout = TimeSpan.FromMinutes(1)
-					}
-				};
+		//	var user = UserAccounts.GetUser(target);
+		//	if (user.Warnings.Count > 0)
+		//	{
+		//		var message = new PaginatedMessage
+		//		{
+		//			Author = new EmbedAuthorBuilder
+		//			{
+		//				Name = $"Предупреждения {target.Nickname ?? target.Username}",
+		//				IconUrl = target.GetAvatarUrl() ?? target.GetDefaultAvatarUrl()
+		//			},
+		//			Color = Color.DarkOrange,
+		//			Options = new PaginatedAppearanceOptions
+		//			{
+		//				DisplayInformationIcon = false,
+		//				JumpDisplayOptions = JumpDisplayOptions.Never,
+		//				FooterFormat = "Предупреждение {0} из {1}",
+		//				Timeout = TimeSpan.FromMinutes(1)
+		//			}
+		//		};
 
-				var warns = new List<PaginatedMessage.Page>();
-				foreach (var item in user.Warnings)
-				{
-					warns.Add(new PaginatedMessage.Page
-					{
-						Description = $"**Предупреждение было выдано:** {item.CreateDate:dd.MM.yyyy HH:mm}\n**Причина:** {item.Reason}"
-					});
-				}
-				message.Pages = warns;
+		//		var warns = new List<PaginatedMessage.Page>();
+		//		foreach (var item in user.Warnings)
+		//		{
+		//			warns.Add(new PaginatedMessage.Page
+		//			{
+		//				Description = $"**Предупреждение было выдано:** {item.CreateDate:dd.MM.yyyy HH:mm}\n**Причина:** {item.Reason}"
+		//			});
+		//		}
+		//		message.Pages = warns;
 
-				var reactionList = new ReactionList
-				{
-					Forward = true,
-					Backward = true,
-					Trash = true
-				};
+		//		var reactionList = new ReactionList
+		//		{
+		//			Forward = true,
+		//			Backward = true,
+		//			Trash = true
+		//		};
 
-				await PagedReplyAsync(message, reactionList);
-			}
-		}
+		//		await PagedReplyAsync(message, reactionList);
+		//	}
+		//}
 	}
 }

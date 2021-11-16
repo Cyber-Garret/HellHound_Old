@@ -31,10 +31,10 @@ namespace Bot.Modules
 					#region parseColor
 					if (hex.StartsWith("0x", StringComparison.CurrentCultureIgnoreCase) ||
 						hex.StartsWith("&H", StringComparison.CurrentCultureIgnoreCase))
-						hex = hex.Substring(2);
+						hex = hex[2..];
 
 					if (hex.StartsWith("#", StringComparison.CurrentCultureIgnoreCase))
-						hex = hex.Substring(1);
+						hex = hex[1..];
 					#endregion
 
 					bool parsedSuccessfully = uint.TryParse(hex, NumberStyles.HexNumber, CultureInfo.CurrentCulture, out uint color);

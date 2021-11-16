@@ -92,5 +92,10 @@ namespace Bot.Modules
 				}
 			}
 		}
+		[Command("дизлайк")]
+		public async Task DownRep(SocketGuildUser user)
+		{
+
+		}
 	}
 }
